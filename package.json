@@ -4,9 +4,14 @@
   "description": "Simple assignment submission portal (HTML/CSS/JS frontend + Node.js/Express backend)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "jest"
   },
   "dependencies": {
     "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "jest": "^30.0.0",
+    "supertest": "^7.0.0"
   }
 }
