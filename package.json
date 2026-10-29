@@ -1,0 +1,12 @@
+{
+  "name": "assignment-submission-portal",
+  "version": "1.0.0",
+  "description": "Simple assignment submission portal (HTML/CSS/JS frontend + Node.js/Express backend)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

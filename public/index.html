@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assignment Submission Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>Assignment Submission Portal</h1>
+    <p>Submit the link to your assignment below.</p>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>New submission</h2>
+
+      <div id="status" class="status hidden" role="status" aria-live="polite"></div>
+
+      <form id="submission-form" novalidate>
+        <div class="field">
+          <label for="name">Student name</label>
+          <input type="text" id="name" name="name" placeholder="e.g. Ali Khan" autocomplete="name">
+          <span class="error" id="error-name"></span>
+        </div>
+
+        <div class="field">
+          <label for="regNo">Registration number</label>
+          <input type="text" id="regNo" name="regNo" placeholder="e.g. FA23-BSE-001">
+          <span class="error" id="error-regNo"></span>
+        </div>
+
+        <div class="field">
+          <label for="title">Assignment title</label>
+          <input type="text" id="title" name="title" placeholder="e.g. Lab Midterm - DevOps">
+          <span class="error" id="error-title"></span>
+        </div>
+
+        <div class="field">
+          <label for="url">Submission URL</label>
+          <input type="url" id="url" name="url" placeholder="https://github.com/username/repo">
+          <span class="error" id="error-url"></span>
+        </div>
+
+        <button type="submit" id="submit-btn">Submit assignment</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="list-header">
+        <h2>Saved submissions</h2>
+        <span id="count" class="count">0</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Reg. No.</th>
+              <th>Assignment</th>
+              <th>Link</th>
+              <th>Submitted</th>
+            </tr>
+          </thead>
+          <tbody id="submissions-body">
+            <tr><td colspan="5" class="empty">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="validate.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
