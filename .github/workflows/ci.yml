@@ -19,5 +19,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Runs the tests AND saves the results to jest-results.json.
+      # If any test fails, this step fails, so the run shows a red X.
       - name: Run tests
-        run: npm test
+        run: npm test -- --ci --json --outputFile=jest-results.json
+
+      # "if: always()" = run this step even if the tests failed
+      - name: Build test report
+        if: always()
+        run: node make-report.js
+
+      - name: Send report to local receiver
+        if: always()
+        continue-on-error: true # if your laptop is offline, show a warning instead of blaming the code
+        env:
+          REPORT_URL: ${{ secrets.REPORT_URL }}
+          REPORT_TOKEN: ${{ secrets.REPORT_TOKEN }}
+        run: |
+          curl --fail-with-body -sS -X POST "$REPORT_URL" \
+            -H "Content-Type: application/json" \
+            -H "ngrok-skip-browser-warning: true" \
+            -H "x-report-token: $REPORT_TOKEN" \
+            --data-binary @test-report.json
