@@ -2,3 +2,6 @@ node_modules/
 data/
 .env
 tests/test-submissions.json
+test-report.json
+jest-results.json
+test-report.json
