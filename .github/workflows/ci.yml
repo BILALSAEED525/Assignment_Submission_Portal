@@ -42,6 +42,50 @@ jobs:
             -H "x-report-token: $REPORT_TOKEN" \
             --data-binary @test-report.json
 
+      # Bonus: email the report after passing AND failing runs
+      - name: Read report for email
+        id: report
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "status=$(jq -r .overallStatus test-report.json)" >> "$GITHUB_OUTPUT"
+          echo "total=$(jq -r .summary.total test-report.json)" >> "$GITHUB_OUTPUT"
+          echo "passed=$(jq -r .summary.passed test-report.json)" >> "$GITHUB_OUTPUT"
+          echo "failed=$(jq -r .summary.failed test-report.json)" >> "$GITHUB_OUTPUT"
+          {
+            echo "results<<EOF"
+            jq -r '.tests[] | "\(.result | ascii_upcase): \(.name)"' test-report.json
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Email test report
+        if: always()
+        continue-on-error: true
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          from: CI Pipeline <${{ secrets.MAIL_USERNAME }}>
+          to: ${{ secrets.MAIL_TO }}
+          subject: "Test report: ${{ steps.report.outputs.status }} (${{ steps.report.outputs.passed }}/${{ steps.report.outputs.total }} passed) for ${{ github.repository }}"
+          body: |
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Overall result: ${{ steps.report.outputs.status }}
+            Tests: ${{ steps.report.outputs.total }} total, ${{ steps.report.outputs.passed }} passed, ${{ steps.report.outputs.failed }} failed
+
+            Individual results:
+            ${{ steps.report.outputs.results }}
+
+            The full report is attached as test-report.json.
+          attachments: test-report.json
+
   # Bonus: publish the static demo to GitHub Pages.
   # "needs: test" = runs only if every test passed; a failing run skips it,
   # so the previously published site stays unchanged.
