@@ -41,3 +41,35 @@ jobs:
             -H "ngrok-skip-browser-warning: true" \
             -H "x-report-token: $REPORT_TOKEN" \
             --data-binary @test-report.json
+
+  # Bonus: publish the static demo to GitHub Pages.
+  # "needs: test" = runs only if every test passed; a failing run skips it,
+  # so the previously published site stays unchanged.
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Build static site
+        run: |
+          mkdir _site
+          cp -r public/* _site/
+          cp validate.js _site/
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
