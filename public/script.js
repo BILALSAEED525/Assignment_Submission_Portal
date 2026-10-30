@@ -112,12 +112,7 @@ form.addEventListener('submit', async (event) => {
   const data = getFormData();
 
   // 1) Quick check in the browser (same rules as the backend)
-  const check = Validator.validateSubmission(data);
-  if (!check.valid) {
-    showErrors(check.errors);
-    showStatus('Submission rejected. Please fix the errors below.', 'error');
-    return;
-  }
+  
 
   // 2) Send to the backend, which validates again and saves
   submitBtn.disabled = true;
