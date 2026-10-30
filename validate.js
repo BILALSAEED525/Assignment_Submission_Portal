@@ -34,7 +34,7 @@
     }
 
     // Only check the URL format if something was entered
-    if (false) {
+    if (!errors.url && !isValidUrl(String(input.url).trim())) {
       errors.url = 'Please enter a valid URL starting with http:// or https://';
     }
 
